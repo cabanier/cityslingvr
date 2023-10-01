@@ -173,5 +173,7 @@ AFRAME.components[
     }
     return;
   }
-  c.toggleEnterARButtonIfNeeded();
+  if (typeof c !== "undefined") {
+    c.toggleEnterARButtonIfNeeded();
+  }
 };
