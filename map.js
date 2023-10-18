@@ -31,6 +31,16 @@ AFRAME.registerComponent("map", {
     this.el.appendChild(this.crystal);
 
     document.querySelector('a-scene').addEventListener('enter-vr', function () {
+      let model_name = 'unknown';
+      if (navigator.userAgent.indexOf('Quest 2') !== -1)
+        model_name = 'Quest 2';
+      else if (navigator.userAgent.indexOf('Quest 3') !== -1)
+        model_name = 'Quest 3';
+      else if (navigator.userAgent.indexOf("Quest Pro") !== -1)
+        model_name = 'Quest Pro';
+
+      gtag('event', 'enter-vr', { 'model': model_name});
+
       if (this.xrSession.updateTargetFrameRate) {
         this.xrSession.updateTargetFrameRate(72);
       }
