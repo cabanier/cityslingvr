@@ -167,6 +167,7 @@ AFRAME.registerComponent("player", {
     // apply velocity and collide with environment
     velocityRaycaster.data.origin = this.camera.object3D.position;
     velocityRaycaster.data.direction = this.velocity;
+    velocityRaycaster.raycaster.near = 0.01;
     velocityRaycaster.raycaster.far = Math.max(this.velocity.length() * timeDeltaSec, this.data.padding);
     velocityRaycaster.checkIntersections();
     if (!velocityRaycaster.intersections.length) {
