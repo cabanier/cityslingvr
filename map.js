@@ -10,6 +10,7 @@ AFRAME.registerComponent("map", {
 
   init: function() {
     this.frame = 0;
+    this.XRStart = 0;
     this.playerTile = { x: 1000, y: 1000 };
     this.playerAdjacentTileIds = [];
     this.tileOffset = 0.5 * this.data.tileSize;
@@ -38,6 +39,8 @@ AFRAME.registerComponent("map", {
         model_name = 'Quest 3';
       else if (navigator.userAgent.indexOf("Quest Pro") !== -1)
         model_name = 'Quest Pro';
+      else
+        model_name = navigator.userAgent;
 
       gtag('event', 'enter-vr', { 'model': model_name});
 
@@ -47,6 +50,14 @@ AFRAME.registerComponent("map", {
       if (model_name === 'Quest 3') {
         this.renderer.xr.setFoveation(0);
       }
+
+
+      this.XRStart = performance.now();
+    });
+
+    document.querySelector('a-scene').addEventListener('exit-vr', function () {
+      gtag('event', 'exit-vr', { duration: Math.floor((performance.now() - this.XRStart)/1000) });
+      this.XRStart = 0;
     });
 
     this.throttledEmitComponentChanged = function emitChange () {};
