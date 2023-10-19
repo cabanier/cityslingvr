@@ -42,7 +42,10 @@ AFRAME.registerComponent("map", {
       gtag('event', 'enter-vr', { 'model': model_name});
 
       if (this.xrSession.updateTargetFrameRate) {
-        this.xrSession.updateTargetFrameRate(72);
+        this.xrSession.updateTargetFrameRate(model_name === 'Quest 3' ? 90 : 72);
+      }
+      if (model_name === 'Quest 3') {
+        this.renderer.xr.setFoveation(0);
       }
     });
 
