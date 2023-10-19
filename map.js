@@ -74,6 +74,7 @@ AFRAME.registerComponent("map", {
       this.crystal.object3D.position.lerp(playerWorldPosition, 1 / (1 + crystalDistance));
       if (playerWorldPosition.distanceTo(this.crystal.object3D.position) < 1) {
         hitCrystal = true;
+        gtag('event', 'hitCrystal');
         this.playCollideSound();
         this.moveCrystal(playerWorldPosition, playerVelocity);
       }
