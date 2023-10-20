@@ -56,7 +56,22 @@ AFRAME.registerComponent("map", {
     });
 
     document.querySelector('a-scene').addEventListener('exit-vr', function () {
-      gtag('event', 'exit-vr', { duration: Math.floor((performance.now() - this.XRStart)/1000) });
+      let d = Math.floor((performance.now() - this.XRStart)/1000);
+      let timeSpent = "unknown";
+      if (d < 30)
+        timeSpent = "< 30 seconds";
+      else if (d < 60)
+        timeSpent = "< 1 minute";
+      else if (d < 300)
+        timeSpent = "< 5 minutes";
+      else if (d < 600)
+        timeSpent = "< 10 minutes";
+      else if (d < 1200)
+        timeSpent = "< 20 minutes";
+      else
+        timeSpent = Math.floor(d/60) + " minutes";
+
+      gtag('event', 'exit-vr', { time_spent: timeSpent });
       this.XRStart = 0;
     });
 
