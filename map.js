@@ -52,11 +52,11 @@ AFRAME.registerComponent("map", {
       }
 
 
-      this.XRStart = performance.now();
+      this.XRStart = Date.now();
     });
 
     document.querySelector('a-scene').addEventListener('exit-vr', function () {
-      let d = Math.floor((performance.now() - this.XRStart)/1000);
+      let d = Math.floor((Date.now() - this.XRStart)/1000);
       let timeSpent = "unknown";
       if (d < 30)
         timeSpent = "< 30 seconds";
