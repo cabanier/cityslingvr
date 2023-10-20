@@ -193,8 +193,10 @@ AFRAME.registerComponent("player", {
       }
 
       // sound hit wall
-      this.scoreValue = 0;
-      this.updateScore();
+      if (advanced.checked){
+        this.scoreValue = 0;
+        this.updateScore();
+      }
     }
 
     // collide with floor
@@ -202,8 +204,10 @@ AFRAME.registerComponent("player", {
       // sound
       if (this.velocity.y < -2) {
         this.playCollideSound("hit-ground", Math.abs(this.velocity.y));
-        this.scoreValue = 0;
-        this.updateScore();
+        if (advanced.checked){
+          this.scoreValue = 0;
+          this.updateScore();
+        }
       }
       // collision
       rigLocalPosition.y = 0;
