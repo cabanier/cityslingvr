@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8" />
     <meta name="keywords" content="WebXR, VR, City Sling VR" />
+    <meta name="description" content="City Sling VR, WebXR game maintained by Rik Cabanier">
     <title>City Sling VR Experience</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -17,7 +18,7 @@
       gtag('config', 'G-NG82SD287B');
     </script>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/instanced-mesh@v0.6.0/src/instanced-mesh.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/instanced-mesh@v0.7.0/src/instanced-mesh.min.js"></script>
     <script src="hand.js"></script>
     <script src="tile.js"></script>
     <script src="map.js"></script>
@@ -205,7 +206,7 @@
           id="sound-crystal"
           src="assets/crystal.webm"
         ></audio>
-        <a-plane id="groundPlane" width="160" height="160" color="red" instanced-mesh="capacity:1000;positioning: world;"></a-plane>
+        <a-plane id="groundPlane" width="160" height="160" color="red"></a-plane>
       </a-assets>
 
       <a-entity light="type:ambient; color:#e8e8e8"></a-entity>
@@ -265,7 +266,7 @@
         support required.
       </p>
       <section class="slider-checkbox">
-        <input type="checkbox" id="advanced" />
+        <input type="checkbox" id="advanced" aria-label="Advanced setting"/>
         <label class="label" style="color: white">Advanced mode. Reset score if you hit the ground or a building</label>
       </section>
       <p style="font-size: 12px">
