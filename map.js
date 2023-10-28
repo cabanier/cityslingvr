@@ -51,6 +51,9 @@ AFRAME.registerComponent("map", {
         this.renderer.xr.setFoveation(0);
       }
 
+      fetch("https://cvs95jiqa7.execute-api.us-east-1.amazonaws.com/IncreaseUsageCounter?key=citysling_entervr", {
+        method: "GET",
+        mode: "cors"});
 
       this.XRStart = Date.now();
     });
@@ -72,6 +75,10 @@ AFRAME.registerComponent("map", {
         timeSpent = Math.floor(d/60) + " minutes";
 
       gtag('event', 'exit-vr', { time_spent: timeSpent });
+      fetch("https://cvs95jiqa7.execute-api.us-east-1.amazonaws.com/IncreaseUsageCounter?key=citysling_leavevr", {
+        method: "GET",
+        mode: "cors"});
+
       this.XRStart = 0;
     });
 
