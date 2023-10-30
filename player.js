@@ -132,9 +132,26 @@ AFRAME.registerComponent("player", {
       let player = document.createElement("a-sphere");
       player.setAttribute("radius", "1");
       player.setAttribute("color", "#3498db");
+      player.timeStamp = Date.now();
       this.players.push(player);
     }
+    this.arrows = [];
+    for(let x = 0; x < 30; x++) {
+      let arrow = document.createElement("a-sphere");
+      arrow.setAttribute("radius", ".2");
+      arrow.setAttribute("color", "#24885b");
+      /*
+      let arrow = document.createElement("a-cone");
+      arrow.setAttribute("radius-top", ".1");
+      arrow.setAttribute("radius-bottom", "0");
+      arrow.setAttribute("height", "0.4");
+      arrow.setAttribute("color", "#3498db");
+      */
+      this.arrows.push(arrow);
+    }
+
     this.madeRequest = false;
+    this.socket = null;
   },
 
   play: function() {
@@ -314,33 +331,75 @@ AFRAME.registerComponent("player", {
     }
 
     const userID = this.el.parentEl.getAttribute("UserID");
-/*
-    if(multiplayer.checked && !this.madeRequest && (userID>0) && (this.ticks++ % 9 === 0)) {
-      this.madeRequest = true;
-      const pos = this.cameraWorldPosition;
-      let stringpos = pos.x + "%20" + pos.y + "%20" +pos.z;
-      let requestString = "https://xmhj53hagj.execute-api.us-east-1.amazonaws.com/UpdateAndGetPlayers?player=" + userID + "&position=" + stringpos;
-      fetch(requestString, {
-        method: "GET",
-        mode: "cors"}).then((data) => {
-          data.json().then((positions) => {
-            this.madeRequest = false;
-            let x = 0;
-            for(x = 0; x < positions.length; x++) {
-              this.players[x].setAttribute("position", positions[x]);
-              if (this.players[x].parentNode === null) {
-                this.map.appendChild(this.players[x]);
-              }
-            }
-            while(x<30) {
-              if (this.players[x].parentNode !== null) {
-                this.map.removeChild(this.players[x]);
-              }
-              x++;
-            }
-          })
+
+    if(multiplayer.checked && !this.madeRequest && (userID>0) && (this.ticks++ % 8 === 0)) {
+      if (this.socket === null) {
+        this.madeRequest = true;
+        this.socket = new WebSocket("wss://9655bb80yh.execute-api.us-east-1.amazonaws.com/production/");
+        this.socket.addEventListener("open", (event) => {
+          this.madeRequest = false;
         });
+        this.socket.addEventListener("message", (event) => {
+          const positions = JSON.parse(event.data);
+//          this.madeRequest = false;
+          let x = 0;
+          const currentTime = Date.now();
+          for (x = 0; x < positions.length; x++) {
+            const player = this.players[x];
+            player.setAttribute("position", positions[x]);
+            player.timeStamp = currentTime;
+            if (player.parentNode === null) {
+              this.map.appendChild(player);
+            }
+          }
+          while (x < 30) {
+            if (this.players[x].parentNode !== null) {
+              this.map.removeChild(this.players[x]);
+            }
+            x++;
+          }
+        });
+
+        return;
+      }
+//      this.madeRequest = true;
+      const pos = this.cameraWorldPosition;
+      const requestString = 
+        {
+          "action": "uploadPlayerAndGetOthers",
+          "info":{
+            "player": userID.toString(),
+            "position": pos.x + " " + pos.y + " " + pos.z
+          }
+        };
+      this.socket.send(JSON.stringify(requestString));
     }
-*/
+
+    // draw arrows
+    const flatCamera =  new THREE.Vector3(this.cameraWorldPosition.x, 0, this.cameraWorldPosition.z);
+    for (let x = 0; x < 30; x++) {
+      const player = this.players[x];
+      const arrow = this.arrows[x];
+      if (this.players[x].parentNode === null) {
+        if (arrow.parentNode !== null)
+          this.el.removeChild(arrow);
+        continue;
+      }
+      if (arrow.parentNode === null)
+        this.el.appendChild(arrow);
+
+      const playerPosition = player.getAttribute("position");
+      const targetCoordinate = new THREE.Vector3(playerPosition.x, 0, playerPosition.z);
+      const direction = new THREE.Vector3();
+      targetCoordinate.sub(flatCamera).normalize();
+      targetCoordinate.y = .8;
+      arrow.setAttribute("position", targetCoordinate);
+      let scale = 100 / this.cameraWorldPosition.distanceTo(player.getAttribute("position"));
+      if (scale > .7)
+        scale = .7;
+      if (scale < 0.05)
+        scale = 0.05;
+      arrow.setAttribute("scale", scale + " " + scale + " " + scale);
+    }
   }
 });
