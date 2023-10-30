@@ -16,6 +16,7 @@ AFRAME.registerComponent("map", {
     this.tileOffset = 0.5 * this.data.tileSize;
     this.existingTiles = {};
     this.tileToElement = {};
+    this.userID = 0;
 
     this.crystal = document.createElement("a-entity");
     this.crystal.setAttribute("animation", "property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear;");
@@ -53,7 +54,11 @@ AFRAME.registerComponent("map", {
 
       fetch("https://cvs95jiqa7.execute-api.us-east-1.amazonaws.com/IncreaseUsageCounter?key=citysling_entervr", {
         method: "GET",
-        mode: "cors"});
+        mode: "cors"}).then((data) => {
+          data.json().then((json) => {
+            this.setAttribute("UserID", json);
+          })
+        });
 
       this.XRStart = Date.now();
     });

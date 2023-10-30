@@ -77,6 +77,7 @@ AFRAME.registerComponent("player", {
     this.lastCollisionWorldPosition = new THREE.Vector3();
     this.lastCollisionPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
     this.scoreValue = 0;
+    this.ticks = 0;
 
     // events
     window.addEventListener("keydown", function(evt) {
@@ -125,6 +126,15 @@ AFRAME.registerComponent("player", {
     this.leftHand.addEventListener("thumbstickup", function(evt) {
       self.leftWeb.components.web.changeLengthFactor(0);
     });
+
+    this.players = [];
+    for(let x = 0; x < 30; x++) {
+      let player = document.createElement("a-sphere");
+      player.setAttribute("radius", "1");
+      player.setAttribute("color", "#3498db");
+      this.players.push(player);
+    }
+    this.madeRequest = false;
   },
 
   play: function() {
@@ -302,5 +312,35 @@ AFRAME.registerComponent("player", {
         this.updateScore();
       }
     }
+
+    const userID = this.el.parentEl.getAttribute("UserID");
+/*
+    if(multiplayer.checked && !this.madeRequest && (userID>0) && (this.ticks++ % 9 === 0)) {
+      this.madeRequest = true;
+      const pos = this.cameraWorldPosition;
+      let stringpos = pos.x + "%20" + pos.y + "%20" +pos.z;
+      let requestString = "https://xmhj53hagj.execute-api.us-east-1.amazonaws.com/UpdateAndGetPlayers?player=" + userID + "&position=" + stringpos;
+      fetch(requestString, {
+        method: "GET",
+        mode: "cors"}).then((data) => {
+          data.json().then((positions) => {
+            this.madeRequest = false;
+            let x = 0;
+            for(x = 0; x < positions.length; x++) {
+              this.players[x].setAttribute("position", positions[x]);
+              if (this.players[x].parentNode === null) {
+                this.map.appendChild(this.players[x]);
+              }
+            }
+            while(x<30) {
+              if (this.players[x].parentNode !== null) {
+                this.map.removeChild(this.players[x]);
+              }
+              x++;
+            }
+          })
+        });
+    }
+*/
   }
 });
